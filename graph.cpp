@@ -1,8 +1,9 @@
 #include <iostream>
 #include "graph.h"
 
-using namespace std;
-
+/*
+This file contains basic functions related to the graph structure defined in graph.h
+*/
 int splitHalf1(string s);
 int splitHalf2(string s);
 GRAPH *Initialize(int n, int m);

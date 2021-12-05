@@ -12,3 +12,5 @@ struct GRAPH
 GRAPH *graphInput(GRAPH *graph);
 void printGraph(GRAPH *g);
 void deleteGraph(GRAPH *g);
+
+using namespace std;
