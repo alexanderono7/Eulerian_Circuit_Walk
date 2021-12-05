@@ -76,28 +76,18 @@ GRAPH *assignEdge(GRAPH *g, int u, int v, int weight)
     return g;
 }
 
-//Old Version - remove later
-// //Print out the graph adjacency matrix
-// void printGraph(GRAPH *g)
-// {
-//     for (int i = 1; i < (g->vertices + 1); i++)
-//     {
-//         for (int j = 1; j < (g->vertices + 1); j++)
-//         {
-//             cout << g->A[i][j] << " ";
-//         }
-//         cout << endl;
-//     }
-//     return;
-// }
-
 //Print out the graph adjacency matrix
 void printGraph(GRAPH *g)
 {
-    cout << "  ";
+    cout << "     |  ";
     for (int i = 1; i < (g->vertices + 1); i++)
     {
-        cout << i << " ";
+        printf("%3d ", i);
+    }
+    cout << "\n--- -+-";
+    for (int i = 1; i < (g->vertices + 1); i++)
+    {
+        cout << " ---";
     }
     cout << "\n";
 
@@ -107,9 +97,9 @@ void printGraph(GRAPH *g)
         {
             if (j == 1)
             {
-                cout << i << " ";
+                printf("%3d  |  ", i);
             }
-            cout << g->A[i][j] << " ";
+            printf("%3d ", g->A[i][j]);
         }
         cout << endl;
     }
