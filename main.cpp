@@ -8,7 +8,8 @@ int main(){
     cout << "Program Executed\n";
     GRAPH *g = NULL;
     g = graphInput(g);
-    printGraph(g);
+
+
 
     deleteGraph(g);
     exit(0);

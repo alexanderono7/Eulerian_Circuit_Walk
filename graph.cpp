@@ -69,6 +69,7 @@ GRAPH *Initialize(int n, int m)
 }
 
 //Given the values of two vertices, create an edge between them
+//(update & return graph)
 GRAPH *assignEdge(GRAPH *g, int u, int v, int weight)
 {
     g->A[u][v] = weight;
@@ -76,7 +77,7 @@ GRAPH *assignEdge(GRAPH *g, int u, int v, int weight)
     return g;
 }
 
-//Print out the graph adjacency matrix
+//Print out the graph's adjacency matrix
 void printGraph(GRAPH *g)
 {
     cout << "     |  ";
@@ -106,7 +107,7 @@ void printGraph(GRAPH *g)
     return;
 }
 
-// deallocate memory for graph argument
+// deallocate memory for graph
 void deleteGraph(GRAPH *g)
 {
     for (int i = 0; i < (g->vertices + 1); i++)

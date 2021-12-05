@@ -1,3 +1,4 @@
+//Structure that defines an undirected graph
 struct GRAPH
 {
     int vertices;
@@ -9,8 +10,5 @@ struct GRAPH
 };
 
 GRAPH *graphInput(GRAPH *graph);
-GRAPH *Initialize(int n, int m);
-GRAPH *assignEdge(GRAPH *g, int u, int v, int weight);
 void printGraph(GRAPH *g);
 void deleteGraph(GRAPH *g);
-
