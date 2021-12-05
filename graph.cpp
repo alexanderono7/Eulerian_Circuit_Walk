@@ -1,3 +1,5 @@
+
+
 #include <iostream>
 #include "graph.h"
 
@@ -51,6 +53,7 @@ GRAPH *Initialize(int n, int m)
     newGraph->edges = m;
     // dynamically create an array of pointers of size n+1
     newGraph->A = new int *[n + 1];
+    newGraph->odd = new bool [n + 1];
     // dynamically allocate memory of size n+1 for each row (n by n matrix)
     for (int i = 1; i < (n + 1); i++)
     {
@@ -116,4 +119,5 @@ void deleteGraph(GRAPH *g)
         delete[] g->A[i];
     }
     delete[] g->A;
+    delete[] g->odd;
 }
