@@ -14,5 +14,5 @@ main.o	:main.cpp
 	$(CC) $(CFLAGS) main.cpp
 graph.o	:graph.h graph.cpp
 	$(CC) $(CFLAGS) graph.cpp
-clean   :
+clean:
 	rm *.o
