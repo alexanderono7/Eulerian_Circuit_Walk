@@ -16,11 +16,9 @@ int main(){
 
 
     g = graphInput(g);
+    g = floydWarshall(g);
     g = locateOddVertices(g);
-    for (int i = 1; i < g->vertices + 1; i++)
-    {
-        cout << i << " : " << g->odd[i] << "\n";
-    }
+    printMatrix(g->dist, g->A[1],);
 
     deleteGraph(g);
     cout << "Done\n";
