@@ -1,5 +1,6 @@
-#include "graph.h"
 #include <iostream>
+
+#include "graph.h"
 #define INF 99999
 
 /* 
@@ -7,20 +8,16 @@ This file contains more complex algorithms/functions related to the graph struct
 */
 
 //Returns graph O, the derived graph of g which has odd-degree vertices
-GRAPH *locateOddVertices(GRAPH *g)
-{
+GRAPH *locateOddVertices(GRAPH *g) {
     int *odds = new int[g->vertices + 1];
-    int numOdd = 1; //this will be the number of vertices for graph O
-    for (int i = 1; i < (g->vertices + 1); i++)
-    {
-        int v = 0; //counter for # vertices
-        for (int j = 1; j < (g->vertices + 1); j++)
-        {
+    int numOdd = 1;  //this will be the number of vertices for graph O
+    for (int i = 1; i < (g->vertices + 1); i++) {
+        int v = 0;  //counter for # vertices
+        for (int j = 1; j < (g->vertices + 1); j++) {
             if (g->A[i][j] == 1)
                 v++;
         }
-        if (v % 2 == 1)
-        {
+        if (v % 2 == 1) {
             (odds[numOdd] = i);
             numOdd++;
         }
@@ -34,10 +31,9 @@ GRAPH *locateOddVertices(GRAPH *g)
     //     g->O[i] = new int[g->numOdd + 1];
     // }
     GRAPH *O;
-    O = Initialize(numOdd-1, oddEdges);
+    O = Initialize(numOdd - 1, oddEdges);
 
-    for (int i = 0; i < numOdd; i++)
-    {
+    for (int i = 0; i < numOdd; i++) {
         O->names[i] = odds[i];
     }
     delete[] odds;
@@ -47,35 +43,29 @@ GRAPH *locateOddVertices(GRAPH *g)
 
 //Finds the distance of the shortest path between all pairs of vertices
 //Then it applies this to the derivative graph
-GRAPH *floydWarshall(GRAPH *g, GRAPH *o)
-{
+GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
     int V = g->vertices;
     int **dist = new int *[V + 1];
-    for (int a = 1; a < (V + 1); a++)
-    {
+    for (int a = 1; a < (V + 1); a++) {
         dist[a] = new int[V + 1];
     }
-    
+
     dist = g->A;
 
     //F-W algo requires a distinction between "no path" (infinity) and "points to itself" (0), something I have learned the hard way...
-    for (int a = 1; a < (V + 1); a++)
-    {
-        for (int b = 1; b < (V + 1); b++){
-            if(dist[a][b] == 0) dist[a][b] = INF;
+    for (int a = 1; a < (V + 1); a++) {
+        for (int b = 1; b < (V + 1); b++) {
+            if (dist[a][b] == 0)
+                dist[a][b] = INF;
         }
         dist[a][a] = 0;
     }
 
     //actual floyd warshall algorithm
-    for (int k = 1; k < (V + 1); k++)
-    {
-        for (int i = 1; i < (V + 1); i++)
-        {
-            for (int j = 1; j < (V + 1); j++)
-            {
-                if (dist[i][j] > dist[i][k] + dist[k][j])
-                {
+    for (int k = 1; k < (V + 1); k++) {
+        for (int i = 1; i < (V + 1); i++) {
+            for (int j = 1; j < (V + 1); j++) {
+                if (dist[i][j] > dist[i][k] + dist[k][j]) {
                     dist[i][j] = dist[i][k] + dist[k][j];
                 }
             }
@@ -83,17 +73,14 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o)
     }
 
     //update derived graph o
-    for (int a = 1; a < (o->vertices + 1); a++)
-    {
-        for (int b = 1; b < (o->vertices + 1); b++)
-        {
+    for (int a = 1; a < (o->vertices + 1); a++) {
+        for (int b = 1; b < (o->vertices + 1); b++) {
             o->A[a][b] = dist[o->names[a]][o->names[b]];
         }
     }
 
     //delete allocated memory
-    for (int a = 1; a < (o->vertices + 1); a++)
-    {
+    for (int a = 1; a < (o->vertices + 1); a++) {
         delete[] dist[a];
     }
     delete[] dist;
@@ -101,10 +88,70 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o)
     return o;
 }
 
-PATH *perfectMatching(GRAPH *o){
+//initialize new list of edges, where n = maximum number of edges
+PATH *initializePath(int n) {
+    PATH *p = new PATH;
+    p->quant = 0;            //current number of edges in the "path"
+    p->P = new EDGE[n + 1];  //unsorted set of edges from o. This array starts from 1 just to be consistent with the other arrays of this program.
+}
+
+//delete allocated memory for a PATH variable
+void deletePath(PATH *p) {
+    delete[] p->P;
+    delete p;
+}
+
+//add EDGE(u,v) w/ W to PATH p
+PATH *appendPath(PATH *p, int u, int v, int W) {
+    p->quant++;
+    p->P[p->quant].a = u;
+    p->P[p->quant].b = v;
+    p->P[p->quant].weight = W;
+    return p;
+}
+
+//print path in the matching style
+void printPath(PATH *p){
+    int n = p->quant;
+    cout << "{";
+    for (int i = 1; i < n+1; i++)
+    {
+        cout << " (";
+        cout << p->P[i].a;
+        cout << ",";
+        cout << p->P[i].b;
+        cout << ") ";
+    }
+    cout << "}";
     
 }
 
+//return a set of EDGEs that form a perfect matching for argument graph
+PATH *perfectMatching(GRAPH *o) {
+    PATH *u = initializePath(o->vertices);  //unsorted path
+    // PATH *s = initializePath(o->vertices);  //sorted path
+    EDGE temp;
+    //insertion sort all edges of graph o and insert them into path u
+    for (int x = 1; x < o->vertices + 1; x++) {
+        for (int y = 1; y < o->vertices + 1; y++) {
+            if (o->A[x][y] != 0) {  //if the edge exists
+                u = appendPath(u, o->names[x], o->names[y], o->A[x][y]);
+                for (int i = u->quant; u->P[i].weight < u->P[i - 1].weight; i--) {
+                    //swap inserted node and lesser node
+                    temp = u->P[i - 1];
+                    u->P[i - 1] = u->P[i];
+                    u->P[i] = temp;
+                    //prevent segfault
+                    if (i == 2) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    printPath(u);
+
+}
 // GRAPH *insertVirtuals(MATCH *m){
 
 // }
