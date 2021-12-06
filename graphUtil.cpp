@@ -101,9 +101,9 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o)
     return o;
 }
 
-// MATCH *perfectMatching(GRAPH *o){
-
-// }
+PATH *perfectMatching(GRAPH *o){
+    
+}
 
 // GRAPH *insertVirtuals(MATCH *m){
 
