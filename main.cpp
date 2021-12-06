@@ -13,14 +13,20 @@ int main(){
     //variable declaration
     cout << "Program Executed\n";
     GRAPH *g = NULL;
+    GRAPH *o = NULL;
 
 
     g = graphInput(g);
-    g = floydWarshall(g);
-    g = locateOddVertices(g);
-    printMatrix(g->dist, g->A[1],);
+    printGraph(g);
 
-    deleteGraph(g);
+    o = locateOddVertices(g);
+    o = floydWarshall(g, o);
+    printMatrix(o->A,o->names,o->vertices); //print adjacency matrix of derived graph O
+    
+
+
+    // deleteGraph(g);
+    // deleteGraph(o);
     cout << "Done\n";
     exit(0);
 }

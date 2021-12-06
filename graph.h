@@ -1,24 +1,43 @@
 #ifndef GRAPH_H_
 #define GRAPH_H_
 
+
+struct EDGE{
+    int a;
+    int b;
+    int weight;
+};
+
+
+//List of EDGEs. Used for storing perfect matching, virtual edge paths, and euler circuit.
+struct PATH{
+    EDGE* P;
+};
+
+//Virtual edge struct - includes recorded path
+struct VEDGE{
+    int weight;
+    PATH path;
+};
+
 //Structure that defines an undirected graph
 struct GRAPH
 {
     int vertices;
     int edges;
 
-    int **A; //2 dimensional Adjacency matrix is used to show edge relationships, size is (vertices)x(vertices).
-    int **dist; //2 dimensional minimum distance matrix, size is (vertices)x(vertices).
+    int *names;
 
-    int numOdd; //quantity of odd vertices
-    int *odd; //1 dimensional graph used to track which vertices are of an odd or even degree
-    int *oddName; //list of values of odd vertices
-    int **O; //Odd 2 dimensional adjacency matrix
+    int **A; //2 dimensional Adjacency matrix is used to show edge relationships, size is (vertices)x(vertices).
+    VEDGE **virt; //2 dimensional matrix of virtual edges
 };
 
 GRAPH *graphInput(GRAPH *graph);
+GRAPH *Initialize(int n, int m);
+void printGraph(GRAPH *g);
 void printMatrix(int **m, int *v, int n);
 void deleteGraph(GRAPH *g);
+
 
 using namespace std;
 
