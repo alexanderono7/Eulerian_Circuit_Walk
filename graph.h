@@ -36,6 +36,7 @@ GRAPH *Initialize(int n, int m);
 void printGraph(GRAPH *g);
 void printMatrix(int **m, int *v, int n);
 void deleteGraph(GRAPH *g);
+void deleteVirt(GRAPH *g, int n);
 
 using namespace std;
 

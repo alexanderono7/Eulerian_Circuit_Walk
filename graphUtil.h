@@ -10,3 +10,4 @@ GRAPH *insertVirtuals(PATH *m, GRAPH *g);
 PATH *initializePath(int n);
 PATH *append(PATH *p, int u, int v, int W);
 PATH *pop(PATH *p);
+void deletePath(PATH *p);

@@ -14,15 +14,6 @@ bool hasAnyEdges(int v, GRAPH* g) {
     return false;
 }
 
-int nextNode(int v, GRAPH* g) {
-    for (int i = 1; i < (g->vertices + 1); i++) {
-        if (g->A[v][i] != 0 || g->vA[v][i] != 0) {
-            return i;
-        }
-    }
-    return 0;  //no nodes left condition
-}
-
 //formation of the circuit
 PATH* euler(GRAPH* g, PATH* circuit) {
     PATH* stack;
@@ -71,12 +62,19 @@ PATH* euler(GRAPH* g, PATH* circuit) {
         } else {
             circuit = append(circuit, e.b, e.a, 1);
         }
-        cout << "\nS:";
-        printPath(stack);
-        cout << "\nC:";
-        printPath(circuit);
-        cout << "\n";
         current = e.a;
     }
+    deletePath(stack);
     return circuit;
+}
+
+void printCircuit(PATH *p) {
+    int n = p->quant;
+    for (int i = 1; i < n + 1; i++) {
+        cout << "\n          (";
+        cout << p->P[i].a;
+        cout << ",";
+        cout << p->P[i].b;
+        cout << ") ";
+    }
 }

@@ -150,7 +150,6 @@ PATH *pop(PATH *p) {
 
 PATH *recoverPath(GRAPH *g, PATH *p, int u, int v) {
     if (g->virt[u][v] == 0) cout << "ERROR";
-    cout << "path recovery";
     int last = u;
     while (u != v) {
         u = g->virt[u][v];
@@ -253,7 +252,3 @@ GRAPH *insertVirtuals(PATH *m, GRAPH *g) {
 
     return g;
 }
-
-// void euler(GRAPH *g){
-
-// }

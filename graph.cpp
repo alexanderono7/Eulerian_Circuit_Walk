@@ -131,12 +131,21 @@ void printGraph(GRAPH *g) {
 
 // deallocate memory for graph
 void deleteGraph(GRAPH *g) {
-    //delete regular adjacency matrix
-    for (int i = 0; i < (g->vertices + 1); i++) {
+    //delete arrays of arrays
+    for (int i = 1; i < g->vertices + 1; i++) {
         delete[] g->A[i];
+        delete[] g->vA[i];
     }
 
     delete[] g->A;
+    delete[] g->vA;
     delete[] g->names;
     delete g;
+}
+
+void deleteVirt(GRAPH *g, int n){
+    for (int i = 1; i < n + 1; i++) {
+        delete[] g->virt[i];
+    }
+    delete[] g->virt;
 }

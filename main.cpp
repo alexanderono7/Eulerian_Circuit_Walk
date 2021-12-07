@@ -11,7 +11,7 @@ Final Project (HW07)
 */
 int main(){
     //variable declaration
-    cout << "Program Executed\n";
+    cout << "\n==========PROGRAM EXECUTED==========\n\n";
     GRAPH *g = NULL; //primary graph
     GRAPH *o = NULL; //derived graph- for odd-degree vertices
     PATH *m = NULL; //perfect matching set of edges
@@ -25,34 +25,39 @@ int main(){
     o = locateOddVertices(g);
     o = initializeVirtuals(o, g->vertices);
 
-    cout << "The odd degree vertices in G are: ";
+    cout << "The odd degree vertices in G: = {";
     for (int i = 1; i < (o->vertices + 1); i++) {
         cout << " " << o->names[i];
     }
+    cout << " }";
 
     //populate derivative graph g with shortest-path 
     o = floydWarshall(g, o);
-    cout << "\nResults of Floyd-Warshall on O:\n";
+    cout << "\n\nResults of Floyd-Warshall on O:";
     printMatrix(o->A,o->names,o->vertices); //print adjacency matrix of derived graph o
     g->virt = o->virt;
 
     //return a list of edges that form a minimum perfect matching from derived graph o
     m = perfectMatching(o); 
-    cout << "The greedy perfect matching in O: M = ";
+    cout << "\nThe greedy perfect matching in O: M = ";
     printPath(m); //print path (path = structure, a list of EDGE objects)
     cout << "\n";
     //insert virtual edges as defined in PATH m into virt** (n by n virtual edge matrix object) as defined in graph g
     g = insertVirtuals(m, g);
 
-    printMatrix(g->vA, g->names, g->vertices);
     circuit = initializePath(g->vertices * g->vertices);
     circuit = euler(g, circuit);
 
-    cout << "Circuit: ";
-    printPath(circuit);
+    cout << "\nThe Euler Circuit in G: \n";
+    printCircuit(circuit);
 
-    // deleteGraph(g);
-    // deleteGraph(o);
-    cout << "\nDone\n";
+
+    deleteVirt(g, g->vertices);
+    deleteGraph(g);
+    deleteGraph(o);
+    deletePath(m);
+    deletePath(circuit);
+
+    cout << "\n\n===========DONE===========\n\n";
     exit(0);
 }
