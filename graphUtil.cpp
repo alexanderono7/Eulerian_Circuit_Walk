@@ -202,7 +202,7 @@ PATH *perfectMatching(GRAPH *o) {
     return m;
 }//end of perfect matching
 
-// GRAPH *insertVirtuals(MATCH *m){
+// GRAPH *insertVirtuals(MATCH *m, GRAPH *g){
 
 // }
 

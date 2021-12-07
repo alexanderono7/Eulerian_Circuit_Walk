@@ -17,11 +17,11 @@ int main(){
     PATH *m = NULL; //perfect matching set of edges
 
     g = graphInput(g);
-    printGraph(g);
+    // printGraph(g); //print main graph g
 
     o = locateOddVertices(g);
     o = floydWarshall(g, o);
-    cout << "Results of Floyd-Warshall on O:";
+    cout << "Results of Floyd-Warshall on O:\n";
     printMatrix(o->A,o->names,o->vertices); //print adjacency matrix of derived graph o
     m = perfectMatching(o); //return a list of edges that form a minimum perfect matching from derived graph o
     cout << "The greedy perfect matching in O: M = ";
@@ -30,6 +30,6 @@ int main(){
 
     // deleteGraph(g);
     // deleteGraph(o);
-    cout << "Done\n";
+    cout << "\nDone";
     exit(0);
 }
