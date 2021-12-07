@@ -7,6 +7,20 @@
 This file contains more complex algorithms/functions related to the graph structure defined in graph.h
 */
 
+//initialize virtual subarray of graph - needs to be done separately from graph initialization due to potential difference in sizes
+GRAPH *initializeVirtuals(GRAPH *g, int n) {
+    g->virt = new int *[n + 1];
+    for (int i = 1; i < (n + 1); i++) {
+        g->virt[i] = new int[n + 1];
+    }
+    for (int i = 1; i < n + 1; i++) {
+        for (int j = 1; j < n + 1; j++) {
+            g->virt[i][j] = 0;
+        }
+    }
+    return g;
+}
+
 //Returns graph O, the derived graph of g which has odd-degree vertices
 GRAPH *locateOddVertices(GRAPH *g) {
     int *odds = new int[g->vertices + 1];
@@ -41,6 +55,8 @@ GRAPH *locateOddVertices(GRAPH *g) {
     return O;
 }
 
+
+
 //Finds the distance of the shortest path between all pairs of vertices
 //Then it applies this to the derivative graph
 GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
@@ -53,12 +69,18 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
     dist = g->A;
 
     //F-W algo requires a distinction between "no path" (infinity) and "points to itself" (0), something I have learned the hard way...
+    //set all nodes besides self-paths to "infinity"
     for (int a = 1; a < (V + 1); a++) {
         for (int b = 1; b < (V + 1); b++) {
-            if (dist[a][b] == 0)
+            if (dist[a][b] == 0 && a != b)
                 dist[a][b] = INF;
+            
+            if (dist[a][b] != 0){
+                o->virt[a][b] = b;
+                
+            }
         }
-        dist[a][a] = 0;
+        o->virt[a][a] = a;
     }
 
     //actual floyd warshall algorithm
@@ -67,6 +89,7 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
             for (int j = 1; j < (V + 1); j++) {
                 if (dist[i][j] > dist[i][k] + dist[k][j]) {
                     dist[i][j] = dist[i][k] + dist[k][j];
+                    o->virt[i][j] = o->virt[i][k]; //track paths of future virtual edges
                 }
             }
         }
@@ -89,7 +112,7 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
 }
 
 //initialize new list of edges, where n = maximum number of edges
-PATH * initializePath(int n) {
+PATH *initializePath(int n) {
     PATH *p = new PATH;
     p->quant = 0;            //current number of edges in the "path"
     p->P = new EDGE[n + 1];  //unsorted set of edges from o. This array starts from 1 just to be consistent with the other arrays of this program.
@@ -116,12 +139,23 @@ PATH *appendPath(PATH *p, int u, int v, int W) {
     return p;
 }
 
+void recoverPath(GRAPH *g, PATH *p, int u, int v){
+    if (g->virt[u][v] == 0) return;
+    
+    int last = u;
+    while (u != v){
+        u = g->virt[u][v];
+        p = appendPath(p, last, u, 1);
+        last = u;
+    }
+    return;
+}
+
 //print path in the matching style
-void printPath(PATH *p){
+void printPath(PATH *p) {
     int n = p->quant;
     cout << "{";
-    for (int i = 1; i < n+1; i++)
-    {
+    for (int i = 1; i < n + 1; i++) {
         cout << " (";
         cout << p->P[i].a;
         cout << ",";
@@ -129,37 +163,33 @@ void printPath(PATH *p){
         cout << ") ";
     }
     cout << "}";
-    
 }
 
 //returns TRUE if Vertex v is incident with any edges in PATH p
-//remember to pass v as vertex name 
-bool incidentPath(int v, PATH* p){
-    if(p->quant)
-    for (int i = 1; i < (p->quant + 1); i++) {
-        if(v == p->P[i].a || v == p->P[i].b){
-            return true;
-        }   
-    }
+//remember to pass v as vertex name
+bool incidentPath(int v, PATH *p) {
+    if (p->quant)
+        for (int i = 1; i < (p->quant + 1); i++) {
+            if (v == p->P[i].a || v == p->P[i].b) {
+                return true;
+            }
+        }
     return false;
 }
 
 //Apply insertion sort to path
-PATH* insertionSort(PATH *path)
-{
+PATH *insertionSort(PATH *path) {
     int n = path->quant;
-    int i, j; //markers
+    int i, j;  //markers
     EDGE key;
-    for (i = 2; i < n+1; i++)
-    {
+    for (i = 2; i < n + 1; i++) {
         key = path->P[i];
         j = i - 1;
- 
+
         /* Move elements of path->P[0..i-1].weight, that are
         greater than key, to one position ahead
         of their current position */
-        while (j >= 1 && path->P[j].weight > key.weight)
-        {
+        while (j >= 1 && path->P[j].weight > key.weight) {
             path->P[j + 1] = path->P[j];
             j = j - 1;
         }
@@ -180,27 +210,26 @@ PATH *perfectMatching(GRAPH *o) {
                 u = appendPath(u, o->names[x], o->names[y], o->A[x][y]);
             }
         }
-    } 
+    }
     //sort the path
     u = insertionSort(u);
     /* 
     Iterate through u; add edge(u,v) to perfect matching M if it is NOT incident
     with any of the edges already existing in M 
     */
-    for (int i = 1; i < u->quant + 1; i++)
-    {
+    for (int i = 1; i < u->quant + 1; i++) {
         int a = u->P[i].a;
         int b = u->P[i].b;
         int weight = u->P[i].weight;
-        if(m->quant == 0){
+        if (m->quant == 0) {
             m = appendPath(m, a, b, weight);
-        } else if(!incidentPath(a, m) && !incidentPath(b, m)){
+        } else if (!incidentPath(a, m) && !incidentPath(b, m)) {
             m = appendPath(m, a, b, weight);
         }
     }
-    
+
     return m;
-}//end of perfect matching
+}  //end of perfect matching
 
 // GRAPH *insertVirtuals(MATCH *m, GRAPH *g){
 

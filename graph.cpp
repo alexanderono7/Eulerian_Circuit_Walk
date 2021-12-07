@@ -49,23 +49,13 @@ GRAPH *Initialize(int n, int m) {
 
     // dynamically create an array of pointers of size n+1
     newGraph->A = new int *[n + 1];
+    // newGraph->virt = new int *[n + 1];
     newGraph->names = new int[n + 1];
 
-    // for (int i = 1; i < (n + 1); i++)
-    // {
-    //     // dynamically allocate memory of size n+1 for each row (n by n matrix)
-    //     newGraph->A[i] = new int[n + 1];
-
-    //     newGraph->names[i+1] = (i+1);
-    //     for (int j = 1; j < n + 1; j++)
-    //     {
-    //         //set value of each point of both matrices to 0
-    //         newGraph->A[i][j] = 0;
-    //     }
-    // }
-
+    //initialize subarrays of 2d arrays
     for (int i = 1; i < (n + 1); i++) {
         newGraph->A[i] = new int[n + 1];
+        // newGraph->virt[i] = new int[n + 1];
         newGraph->names[i] = i;
     }
 
@@ -75,6 +65,7 @@ GRAPH *Initialize(int n, int m) {
 
         for (int j = 1; j < n + 1; j++) {
             newGraph->A[i][j] = 0;
+            // newGraph->virt[i][j] = 0;
         }
     }
 

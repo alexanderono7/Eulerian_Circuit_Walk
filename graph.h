@@ -27,7 +27,7 @@ struct GRAPH {
     int *names;
 
     int **A;       //2 dimensional Adjacency matrix is used to show edge relationships, size is (vertices)x(vertices).
-    VEDGE **virt;  //2 dimensional matrix of virtual edges
+    int **virt;  //2 dimensional matrix of virtual edges
 };
 
 GRAPH *graphInput(GRAPH *graph);
