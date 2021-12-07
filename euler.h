@@ -1,0 +1,1 @@
+PATH* euler(GRAPH * g, PATH * circuit);

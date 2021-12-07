@@ -55,8 +55,6 @@ GRAPH *locateOddVertices(GRAPH *g) {
     return O;
 }
 
-
-
 //Finds the distance of the shortest path between all pairs of vertices
 //Then it applies this to the derivative graph
 GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
@@ -66,7 +64,11 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
         dist[a] = new int[V + 1];
     }
 
-    dist = g->A;
+    for (int a = 1; a < (V + 1); a++) {
+        for (int b = 1; b < (V + 1); b++) {
+            dist[a][b] = g->A[a][b];
+        }
+    }
 
     //F-W algo requires a distinction between "no path" (infinity) and "points to itself" (0), something I have learned the hard way...
     //set all nodes besides self-paths to "infinity"
@@ -74,10 +76,9 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
         for (int b = 1; b < (V + 1); b++) {
             if (dist[a][b] == 0 && a != b)
                 dist[a][b] = INF;
-            
-            if (dist[a][b] != 0){
+
+            if (dist[a][b] != 0) {
                 o->virt[a][b] = b;
-                
             }
         }
         o->virt[a][a] = a;
@@ -89,7 +90,7 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
             for (int j = 1; j < (V + 1); j++) {
                 if (dist[i][j] > dist[i][k] + dist[k][j]) {
                     dist[i][j] = dist[i][k] + dist[k][j];
-                    o->virt[i][j] = o->virt[i][k]; //track paths of future virtual edges
+                    o->virt[i][j] = o->virt[i][k];  //track paths of future virtual edges
                 }
             }
         }
@@ -131,7 +132,7 @@ void deletePath(PATH *p) {
 }
 
 //add EDGE(u,v) w/ W to PATH p
-PATH *appendPath(PATH *p, int u, int v, int W) {
+PATH *append(PATH *p, int u, int v, int W) {
     p->quant++;
     p->P[p->quant].a = u;
     p->P[p->quant].b = v;
@@ -139,16 +140,24 @@ PATH *appendPath(PATH *p, int u, int v, int W) {
     return p;
 }
 
-void recoverPath(GRAPH *g, PATH *p, int u, int v){
-    if (g->virt[u][v] == 0) return;
-    
+PATH *pop(PATH *p) {
+    p->P[p->quant].a = 0;
+    p->P[p->quant].b = 0;
+    p->P[p->quant].weight = 0;
+    p->quant--;
+    return p;
+}
+
+PATH *recoverPath(GRAPH *g, PATH *p, int u, int v) {
+    if (g->virt[u][v] == 0) cout << "ERROR";
+    cout << "path recovery";
     int last = u;
-    while (u != v){
+    while (u != v) {
         u = g->virt[u][v];
-        p = appendPath(p, last, u, 1);
+        p = append(p, last, u, 1);
         last = u;
     }
-    return;
+    return p;
 }
 
 //print path in the matching style
@@ -207,7 +216,7 @@ PATH *perfectMatching(GRAPH *o) {
     for (int x = 1; x < o->vertices + 1; x++) {
         for (int y = 1; y < o->vertices + 1; y++) {
             if (o->A[x][y] != 0) {  //if the edge exists
-                u = appendPath(u, o->names[x], o->names[y], o->A[x][y]);
+                u = append(u, o->names[x], o->names[y], o->A[x][y]);
             }
         }
     }
@@ -222,19 +231,20 @@ PATH *perfectMatching(GRAPH *o) {
         int b = u->P[i].b;
         int weight = u->P[i].weight;
         if (m->quant == 0) {
-            m = appendPath(m, a, b, weight);
+            m = append(m, a, b, weight);
         } else if (!incidentPath(a, m) && !incidentPath(b, m)) {
-            m = appendPath(m, a, b, weight);
+            m = append(m, a, b, weight);
         }
     }
 
     return m;
 }  //end of perfect matching
 
-GRAPH *insertVirtuals(PATH *m, GRAPH *g){
+//Insert edges from path m into graph g
+GRAPH *insertVirtuals(PATH *m, GRAPH *g) {
     for (int i = 1; i < m->quant + 1; i++) {
-        int u = m->P[i].a;            
-        int v = m->P[i].b;            
+        int u = m->P[i].a;
+        int v = m->P[i].b;
         int w = m->P[i].weight;
 
         g->vA[u][v] = w;

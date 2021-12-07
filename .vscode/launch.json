@@ -8,7 +8,7 @@
             "name": "DSA Final Project Debugger",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/run",
+            "program": "${fileDirname}/int",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
