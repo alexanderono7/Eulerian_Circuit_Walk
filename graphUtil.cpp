@@ -231,9 +231,18 @@ PATH *perfectMatching(GRAPH *o) {
     return m;
 }  //end of perfect matching
 
-// GRAPH *insertVirtuals(MATCH *m, GRAPH *g){
+GRAPH *insertVirtuals(PATH *m, GRAPH *g){
+    for (int i = 1; i < m->quant + 1; i++) {
+        int u = m->P[i].a;            
+        int v = m->P[i].b;            
+        int w = m->P[i].weight;
 
-// }
+        g->vA[u][v] = w;
+        g->vA[v][u] = w;
+    }
+
+    return g;
+}
 
 // void euler(GRAPH *g){
 

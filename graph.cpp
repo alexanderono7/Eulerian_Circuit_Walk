@@ -49,13 +49,13 @@ GRAPH *Initialize(int n, int m) {
 
     // dynamically create an array of pointers of size n+1
     newGraph->A = new int *[n + 1];
-    // newGraph->virt = new int *[n + 1];
+    newGraph->vA = new int *[n + 1];
     newGraph->names = new int[n + 1];
 
     //initialize subarrays of 2d arrays
     for (int i = 1; i < (n + 1); i++) {
         newGraph->A[i] = new int[n + 1];
-        // newGraph->virt[i] = new int[n + 1];
+        newGraph->vA[i] = new int[n + 1];
         newGraph->names[i] = i;
     }
 
@@ -65,7 +65,7 @@ GRAPH *Initialize(int n, int m) {
 
         for (int j = 1; j < n + 1; j++) {
             newGraph->A[i][j] = 0;
-            // newGraph->virt[i][j] = 0;
+            newGraph->vA[i][j] = 0;
         }
     }
 
@@ -83,7 +83,7 @@ GRAPH *assignEdge(GRAPH *g, int u, int v, int weight) {
 //Print out (n x n) matrix (m)
 // v = array of the labels
 void printMatrix(int **m, int *v, int n) {
-    cout << "     |  ";
+    cout << "\n     |  ";
     for (int i = 1; i < (n + 1); i++) {
         printf("%3d ", v[i]);
     }

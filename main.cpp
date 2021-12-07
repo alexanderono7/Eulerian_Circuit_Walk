@@ -35,11 +35,9 @@ int main(){
     cout << "The greedy perfect matching in O: M = ";
     printPath(m); //print path (path = structure, a list of EDGE objects)
 
-    recoverPath(g, m, 14, 4);
-    printPath(m); //print path (path = structure, a list of EDGE objects)
-
-
     //insert virtual edges as defined in PATH m into virt** (n by n virtual edge matrix object) as defined in graph g
+    g = insertVirtuals(m, g);
+    printMatrix(g->vA, g->names, g->vertices);
 
     // deleteGraph(g);
     // deleteGraph(o);
