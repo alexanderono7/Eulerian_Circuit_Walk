@@ -21,8 +21,11 @@ int main(){
 
     o = locateOddVertices(g);
     o = floydWarshall(g, o);
+    cout << "Results of Floyd-Warshall on O:";
     printMatrix(o->A,o->names,o->vertices); //print adjacency matrix of derived graph o
     m = perfectMatching(o); //return a list of edges that form a minimum perfect matching from derived graph o
+    cout << "The greedy perfect matching in O: M = ";
+    printPath(m);
 
 
     // deleteGraph(g);

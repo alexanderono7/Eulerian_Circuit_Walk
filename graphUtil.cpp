@@ -89,10 +89,16 @@ GRAPH *floydWarshall(GRAPH *g, GRAPH *o) {
 }
 
 //initialize new list of edges, where n = maximum number of edges
-PATH *initializePath(int n) {
+PATH * initializePath(int n) {
     PATH *p = new PATH;
     p->quant = 0;            //current number of edges in the "path"
     p->P = new EDGE[n + 1];  //unsorted set of edges from o. This array starts from 1 just to be consistent with the other arrays of this program.
+    for (int i = 1; i < (n + 1); i++) {
+        p->P[i].a = -1;
+        p->P[i].b = -1;
+        p->P[i].weight = -1;
+    }
+    return p;
 }
 
 //delete allocated memory for a PATH variable
@@ -126,32 +132,76 @@ void printPath(PATH *p){
     
 }
 
+//returns TRUE if Vertex v is incident with any edges in PATH p
+//remember to pass v as vertex name 
+bool incidentPath(int v, PATH* p){
+    if(p->quant)
+    for (int i = 1; i < (p->quant + 1); i++) {
+        if(v == p->P[i].a || v == p->P[i].b){
+            return true;
+        }   
+    }
+    return false;
+}
+
+//Apply insertion sort to path
+PATH* insertionSort(PATH *path)
+{
+    int n = path->quant;
+    int i, j; //markers
+    EDGE key;
+    for (i = 2; i < n+1; i++)
+    {
+        key = path->P[i];
+        j = i - 1;
+ 
+        /* Move elements of path->P[0..i-1].weight, that are
+        greater than key, to one position ahead
+        of their current position */
+        while (j >= 1 && path->P[j].weight > key.weight)
+        {
+            path->P[j + 1] = path->P[j];
+            j = j - 1;
+        }
+        path->P[j + 1] = key;
+    }
+    return path;
+}
+
 //return a set of EDGEs that form a perfect matching for argument graph
 PATH *perfectMatching(GRAPH *o) {
-    PATH *u = initializePath(o->vertices);  //unsorted path
-    // PATH *s = initializePath(o->vertices);  //sorted path
-    EDGE temp;
-    //insertion sort all edges of graph o and insert them into path u
+    PATH *u = initializePath(o->edges);  //unsorted PATH
+    PATH *m = initializePath(o->edges);  //perfect matching PATH
+
+    //add existing edges to path U
     for (int x = 1; x < o->vertices + 1; x++) {
         for (int y = 1; y < o->vertices + 1; y++) {
             if (o->A[x][y] != 0) {  //if the edge exists
                 u = appendPath(u, o->names[x], o->names[y], o->A[x][y]);
-                for (int i = u->quant; u->P[i].weight < u->P[i - 1].weight; i--) {
-                    //swap inserted node and lesser node
-                    temp = u->P[i - 1];
-                    u->P[i - 1] = u->P[i];
-                    u->P[i] = temp;
-                    //prevent segfault
-                    if (i == 2) {
-                        break;
-                    }
-                }
             }
         }
+    } 
+    //sort the path
+    u = insertionSort(u);
+    /* 
+    Iterate through u; add edge(u,v) to perfect matching M if it is NOT incident
+    with any of the edges already existing in M 
+    */
+    for (int i = 1; i < u->quant + 1; i++)
+    {
+        int a = u->P[i].a;
+        int b = u->P[i].b;
+        int weight = u->P[i].weight;
+        if(m->quant == 0){
+            m = appendPath(m, a, b, weight);
+        } else if(!incidentPath(a, m) && !incidentPath(b, m)){
+            m = appendPath(m, a, b, weight);
+        }
     }
-    printPath(u);
+    
+    return m;
+}//end of perfect matching
 
-}
 // GRAPH *insertVirtuals(MATCH *m){
 
 // }
