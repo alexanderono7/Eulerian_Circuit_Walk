@@ -13,12 +13,6 @@ struct PATH {
     EDGE *P;
 };
 
-//Virtual edge struct - includes recorded path
-struct VEDGE {
-    int weight;
-    PATH path;
-};
-
 //Structure that defines an undirected graph
 struct GRAPH {
     int vertices;
