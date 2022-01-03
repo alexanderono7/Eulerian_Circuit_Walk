@@ -4,10 +4,7 @@
 #include "euler.h"
 
 /* 
-Alexander Ono
-amono1@asu.edu
-CSE-310: Data Structure and Algorithms
-Final Project (HW07)
+Created by Alexander Ono
 */
 int main(){
     //variable declaration
