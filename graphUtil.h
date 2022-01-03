@@ -1,3 +1,4 @@
+//created by Alexander Ono
 #include "graph.h"
 
 GRAPH *locateOddVertices(GRAPH *g);
