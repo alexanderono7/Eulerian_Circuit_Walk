@@ -3,7 +3,7 @@ Alexander Ono
 
 This program returns the Euler Circuit of an undirected graph.
 =========================================================================
-To run:
+To run (in Linux):
 
 make
 ./int
